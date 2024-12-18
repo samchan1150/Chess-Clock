@@ -20,9 +20,23 @@ const closeModal = document.getElementById('close-modal');
 const settingsForm = document.getElementById('settings-form');
 
 function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    seconds = Math.max(0, seconds); // Prevent negative values
+
+    // Decide how many decimal places to display (e.g., 1 or 2)
+    const displayPrecision = 2; // Number of decimal places to display
+    const factor = Math.pow(10, displayPrecision);
+
+    // Round seconds to the desired precision without affecting internal value
+    const roundedSeconds = Math.round(seconds * factor) / factor;
+
+    const min = Math.floor(roundedSeconds / 60);
+    const sec = Math.floor(roundedSeconds % 60);
+    const decimalPart = Math.floor((roundedSeconds - min * 60 - sec) * factor);
+
+    // Format the decimal part with leading zeros if necessary
+    const decimalStr = String(decimalPart).padStart(displayPrecision, '0');
+
+    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}.${decimalStr}`;
 }
 
 function updateDisplays() {
@@ -47,38 +61,54 @@ function switchPlayer() {
         player1Clock.classList.add('active');
     }
 
-    timerInterval = setInterval(countDown, 1000);
+    timerInterval = setInterval(countDown, countdownInterval); // Use the correct interval
 }
+
+const countdownInterval = 10; // Interval in milliseconds
+const decrement = countdownInterval / 1000; // Decrement in seconds (e.g., 0.1 for 100ms)
 
 function countDown() {
     if (activePlayer === 'player1') {
-        time1--;
+        time1 -= decrement;
         if (time1 <= 0) {
             clearInterval(timerInterval);
+            time1 = 0;
+            updateDisplays();
             alert("Player 1's time is up!");
+            return;
         }
     } else if (activePlayer === 'player2') {
-        time2--;
+        time2 -= decrement;
         if (time2 <= 0) {
             clearInterval(timerInterval);
+            time2 = 0;
+            updateDisplays();
             alert("Player 2's time is up!");
+            return;
         }
     }
     updateDisplays();
 }
 
 function startClock(e) {
+    const clickedPlayer = e.currentTarget.id;
+
     if (activePlayer === null) {
-        if (e.currentTarget.id === 'player1') {
+        // Game hasn't started yet
+        if (clickedPlayer === 'player1') {
             activePlayer = 'player2';
             player2Clock.classList.add('active');
         } else {
             activePlayer = 'player1';
             player1Clock.classList.add('active');
         }
-        timerInterval = setInterval(countDown, 1000);
+        timerInterval = setInterval(countDown, countdownInterval); // Corrected interval
+        switchPlayer(); // Start the clock for the first active player
+    } else if (activePlayer === clickedPlayer) {
+        // Only switch turns if the running clock is pressed
+        switchPlayer();
     }
-    switchPlayer();
+    // Do nothing if the stopped clock is pressed
 }
 
 player1Clock.addEventListener('click', startClock);
@@ -100,10 +130,11 @@ window.onclick = function(event) {
 
 settingsForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    startTime1 = parseInt(document.getElementById('start-time1').value) * 60;
-    startTime2 = parseInt(document.getElementById('start-time2').value) * 60;
-    increment1 = parseInt(document.getElementById('increment1').value);
-    increment2 = parseInt(document.getElementById('increment2').value);
+
+    startTime1 = parseFloat(document.getElementById('start-time1').value) * 60;
+    startTime2 = parseFloat(document.getElementById('start-time2').value) * 60;
+    increment1 = parseFloat(document.getElementById('increment1').value);
+    increment2 = parseFloat(document.getElementById('increment2').value);
 
     time1 = startTime1;
     time2 = startTime2;
