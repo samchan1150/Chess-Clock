@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chess Clock</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="clock-container">
+        <div id="player1" class="player-clock">
+            <div class="time-display" id="time1">05:00</div>
+            <div class="player-label">Player 1</div>
+        </div>
+        <div id="player2" class="player-clock">
+            <div class="time-display" id="time2">05:00</div>
+            <div class="player-label">Player 2</div>
+        </div>
+    </div>
+
+    <button id="settings-button">Settings</button>
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal">&times;</span>
+            <h2>Clock Settings</h2>
+            <form id="settings-form">
+                <div>
+                    <label>Player 1 Starting Time (minutes):</label>
+                    <input type="number" id="start-time1" value="5" min="1">
+                </div>
+                <div>
+                    <label>Player 1 Increment (seconds):</label>
+                    <input type="number" id="increment1" value="0" min="0">
+                </div>
+                <div>
+                    <label>Player 2 Starting Time (minutes):</label>
+                    <input type="number" id="start-time2" value="5" min="1">
+                </div>
+                <div>
+                    <label>Player 2 Increment (seconds):</label>
+                    <input type="number" id="increment2" value="0" min="0">
+                </div>
+                <button type="submit">Save Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
