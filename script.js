@@ -35,11 +35,13 @@ function switchPlayer() {
 
     if (activePlayer === 'player1') {
         time1 += increment1;
+        updateDisplays(); // Update the display immediately
         activePlayer = 'player2';
         player1Clock.classList.remove('active');
         player2Clock.classList.add('active');
     } else {
         time2 += increment2;
+        updateDisplays(); // Update the display immediately
         activePlayer = 'player1';
         player2Clock.classList.remove('active');
         player1Clock.classList.add('active');
